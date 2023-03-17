@@ -11,6 +11,20 @@ import BottlewaterproductModel from "../model/userBottleWater"
 import UserhistoryModel from "../model/UserHistoryModel";
 import UsermessageModel from "../model/UsermessageModel";
 
+const getOneUser = async(req:Request,res:Response)=>{
+    try {
+        const getOne = userModel.findById(req.params.id).populate({path:"userModel"})
+        return res.status(200).json({
+            message:"Successfully got one user",
+            data:getOne
+        })
+    } catch (error) {
+        return res.status(400).json({
+            message:"Couldn't get single user"
+        }) 
+    }
+}
+
 const RegisterUser=async(req:Request,res:Response)=>{
     try {
         const{name,email,password,phoneNumber,Address}= req.body;
