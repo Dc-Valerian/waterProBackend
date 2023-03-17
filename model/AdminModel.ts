@@ -7,7 +7,7 @@ interface Admin{
     phoneNumber:number,
     Address:string,
     accountNumber:number,
-    message:{}[],
+    message:{}[] | any,
     isAdmin:boolean,
     bottleWater:{}[],
     pureWater:{}[],
@@ -80,7 +80,7 @@ const AdminSchema =new mongoose.Schema({
    message:[
     {
         type:mongoose.Schema.Types.ObjectId,
-        ref:"message"
+        ref:"messages"
     }
    ],
    history:[

@@ -9,7 +9,7 @@ import bottleWaterModel from "../model/bottleWaterModel";
 import PureWaterModel from "../model/bottleWaterModel";
 import BottlewaterproductModel from "../model/userBottleWater"
 import UserhistoryModel from "../model/UserHistoryModel";
-import {format,formatDistance,formatRelative,subDays} from "date-fns"
+import UsermessageModel from "../model/UsermessageModel";
 
 const RegisterUser=async(req:Request,res:Response)=>{
     try {
@@ -192,4 +192,34 @@ const OrderBottleWater = async (req:Request,res:Response):Promise<Response>=>{
         })
     }
 }
-export {RegisterUser,LoginUser,OrderPureWater,OrderBottleWater}
+const MessageAdmin = async(req:Request,res:Response)=>{
+    try {
+        const {time,text,profileImage} = req.body;
+    const user= await userModel.findById(req.params.id)
+    const admin = await AdminModel.findById(req.params.admin)
+    const dater = new Date().toDateString()
+    if(user){
+        const messages = await UsermessageModel.create({
+            time : dater,
+            text,
+        })
+          user?.message?.push(new mongoose.Types.ObjectId(messages?._id))
+          user?.save();
+          admin?.message?.push(new mongoose.Types.ObjectId(messages?._id))
+          admin?.save();
+          return res.status(200).json({
+            messageee:"message sent",
+        })
+    }else{
+        return res.status(401).json({
+            message:"sth came up"
+        })
+    }
+    
+    } catch (error) {
+       return res.status(404).json({
+        messageee:"cant send message"
+       })
+    }
+}
+export {RegisterUser,LoginUser,OrderPureWater,OrderBottleWater,MessageAdmin}

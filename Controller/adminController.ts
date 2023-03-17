@@ -5,10 +5,12 @@ import { Request,Response } from "express";
 import mongoose from "mongoose"
 import bottleWaterModel from "../model/bottleWaterModel";
 import PurewaterproductModel from "../model/pureWaterModel";
+import AdminmessageModel from "../model/AdminMessageModel";
+import UsermessageModel from "../model/UsermessageModel";
 
 const RegisterAdmin=async(req:Request,res:Response)=>{
     try {
-        const{name,email,password}= req.body;
+        const{name,email,password,bottleWaterQty,bottleWaterAmount,pureWaterQty,pureWaterAmount}= req.body;
         const genAccountNumber = Math.floor(Math.random() * 60) * Math.floor(Math.random() * 60) + 1234
         const salt = await bcrypt.genSalt(10)
         const hash = await bcrypt.hash(password,salt)
@@ -21,16 +23,16 @@ const RegisterAdmin=async(req:Request,res:Response)=>{
         })
         const createBottle = await bottleWaterModel.create({
             _id:reg._id,
-            bottleWaterQty:0,
-            bottleWaterAmount:0,
+            bottleWaterQty,
+            bottleWaterAmount,
             // Totalamount:bottleWaterAmount * bottleWaterQty,
         })
         reg?.bottleWater?.push(new mongoose.Types.ObjectId(createBottle?._id))
         reg?.save()
         const createpureWater = await PurewaterproductModel.create({
             _id:reg._id,
-            bottleWaterQty:0,
-            bottleWaterAmount:0,
+            pureWaterQty,
+            pureWaterAmount,
             Totalamount:0,
         })
         reg?.pureWater?.push(new mongoose.Types.ObjectId(createpureWater?._id))
@@ -103,4 +105,34 @@ const LoginAdmin=async(req:Request,res:Response)=>{
         })
     }
 }
-export {RegisterAdmin,LoginAdmin,PostBottleWater,PostPureWater}
+const MessageUser = async(req:Request,res:Response)=>{
+    try {
+        const {time,text,profileImage} = req.body;
+    const user= await userModel.findById(req.params.id)
+    const admin = await AdminModel.findById(req.params.admin)
+    const dater = new Date().toDateString()
+    if(user){
+        const messages = await UsermessageModel.create({
+            time : dater,
+            text,
+        })
+          user?.message?.push(new mongoose.Types.ObjectId(messages?._id))
+          user?.save();
+          admin?.message?.push(new mongoose.Types.ObjectId(messages?._id))
+          admin?.save();
+          return res.status(200).json({
+            messageee:"message sent",
+        })
+    }else{
+        return res.status(401).json({
+            message:"sth came up"
+        })
+    }
+    
+    } catch (error) {
+       return res.status(404).json({
+        messageee:"cant send message"
+       })
+    }
+}
+export {RegisterAdmin,LoginAdmin,PostBottleWater,PostPureWater,MessageUser}

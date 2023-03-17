@@ -16,5 +16,5 @@ const messageSchema=new mongoose.Schema({
         type:String
     },
 })
-const AdminmessageModel = mongoose.model<Imessage>("message",messageSchema)
+const AdminmessageModel = mongoose.model<Imessage>("messages",messageSchema)
 export default AdminmessageModel
