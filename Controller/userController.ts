@@ -55,7 +55,8 @@ const RegisterUser=async(req:Request,res:Response)=>{
         })
     } catch (error) {
         return res.status(400).json({
-            message:"user not created"
+            message:"user not created",
+            data:error
         })
     }
 }

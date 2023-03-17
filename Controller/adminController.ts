@@ -36,9 +36,9 @@ const RegisterAdmin=async(req:Request,res:Response)=>{
             Totalamount:0,
         })
         reg?.pureWater?.push(new mongoose.Types.ObjectId(createpureWater?._id))
-        // reg?.save()
+        reg?.save()
         return res.status(201).json({
-            message:"user created",
+            message:`Admin Created ${reg.name}`,
             data:reg,
         })
     } catch (error) {
@@ -91,7 +91,7 @@ const LoginAdmin=async(req:Request,res:Response)=>{
            const getEmail = await AdminModel.findOne({email})
            if(getEmail){
             return res.status(200).json({
-                message:`welcome back Boss`,
+                message:`Welcome back ${getEmail.name}`,
                 data:getEmail  
             })
            }else{
@@ -135,4 +135,18 @@ const MessageUser = async(req:Request,res:Response)=>{
        })
     }
 }
-export {RegisterAdmin,LoginAdmin,PostBottleWater,PostPureWater,MessageUser}
+const GetAllProducts = async(req:Request,res:Response)=>{
+    try {
+        const getAllProduct = await bottleWaterModel.find()
+
+        return res.status(200).json({
+            message:"Successfully got all Products",
+            data:getAllProduct
+        })
+    } catch (error) {
+        return res.status(404).json({
+            messageee:"Couldn't Get Products"
+           }) 
+    }
+}
+export {RegisterAdmin,LoginAdmin,PostBottleWater,PostPureWater,MessageUser,GetAllProducts}
